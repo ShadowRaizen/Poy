@@ -28,26 +28,6 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
         }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 24px;
-            padding: 40px;
-            max-width: 380px;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -118,17 +98,6 @@
         <div id="stackContainer" style="position: relative; height: 520px; max-width: 620px; margin: 40px auto;"></div>
     </div>
 
-    <!-- Modal -->
-    <div id="modal" class="modal" style="display: none;">
-        <div class="modal-content glass">
-            <p id="modalText" style="font-size: 1.4rem; margin-bottom: 30px;"></p>
-            <button onclick="closeModal()" 
-                    style="padding: 12px 32px; background: #e11d48; color: white; border: none; border-radius: 50px;">
-                Close
-            </button>
-        </div>
-    </div>
-
     <!-- Background Music -->
     <audio id="bgMusic" loop playsinline webkit-playsinline>
         <source src="Tahanan - Wedding Version (c) El Manu & Jessy Kang [Official Audio].mp3" type="audio/mpeg">
@@ -178,22 +147,14 @@
 
         function endGame() {
             clearInterval(gameInterval);
-            showModal(`Game Over! Your score: ${score} hearts 💕`);
+            alert(`Game Over! Your score: ${score} hearts 💕\n\nNow answer the question!`);
             document.getElementById('gameScreen').style.display = 'none';
             document.getElementById('questionScreen').style.display = 'block';
         }
 
-        function showModal(text) {
-            document.getElementById('modalText').innerHTML = text;
-            document.getElementById('modal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-
         function answerYes() {
-            showModal("I knew it! 💕 Now open your letter...");
+            music.play().catch(() => {});
+            alert("I knew it! 💕 Now open your letter...");
             document.getElementById('questionScreen').style.display = 'none';
             document.getElementById('envelope').style.display = 'block';
         }
@@ -209,7 +170,6 @@
         function openEnvelope() {
             document.getElementById('envelope').style.display = 'none';
             document.getElementById('messageScreen').style.display = 'block';
-            music.play().catch(() => {});
         }
 
         function showSlideshow() {
@@ -232,21 +192,19 @@
 
             slides.forEach((slide, i) => {
                 const card = document.createElement('div');
-                card.className = `slide ${i === 0 ? 'active' : ''}`;
-                card.style.cssText = 'position:absolute;inset:0;';
+                card.className = `stack-card glass ${i === 0 ? 'active' : ''}`;
                 card.innerHTML = `
                     <img src="${slide.url}" style="width:100%;height:100%;object-fit:cover;">
-                    <div class="slide-note">${slide.note}</div>
+                    <div class="stack-note">${slide.note}</div>
                 `;
+                card.onclick = () => {
+                    current = (current + 1) % slides.length;
+                    document.querySelectorAll('.stack-card').forEach((c, idx) => {
+                        c.classList.toggle('active', idx === current);
+                    });
+                };
                 container.appendChild(card);
             });
-
-            setInterval(() => {
-                const allSlides = document.querySelectorAll('.slide');
-                allSlides[current].classList.remove('active');
-                current = (current + 1) % slides.length;
-                allSlides[current].classList.add('active');
-            }, 15000);
         }
     </script>
 </body>
