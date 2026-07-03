@@ -8,7 +8,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
 
-        * { transition: all 0.4s ease; }
+        * { transition: all 0.5s ease; }
 
         body {
             font-family: 'Playfair Display', serif;
@@ -18,39 +18,89 @@
             color: white;
         }
         .romantic-font { font-family: 'Dancing Script', cursive; }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        #playBtn {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 14px 28px;
+            background: #e11d48;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+        }
+
+        #slideshow {
+            position: relative;
+            max-width: 700px;
+            margin: 40px auto;
+            height: 420px;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .slide img, .slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .floating-note {
+            position: absolute;
+            background: rgba(0,0,0,0.7);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-style: italic;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: floatNote 6s ease-in-out infinite;
+        }
+        @keyframes floatNote {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-15px); }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Play Music Button -->
-    <button onclick="startMusic()" id="playBtn"
-            style="position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; 
-                   padding: 16px 32px; background: #e11d48; color: white; border: none; border-radius: 50px; 
-                   font-size: 1.2rem; box-shadow: 0 10px 30px rgba(225,29,72,0.5);">
-        ▶️ Play Our Song 💕
-    </button>
+    <button onclick="startMusic()" id="playBtn">▶️ Play Our Song 💕</button>
 
     <!-- Envelope -->
-    <div id="envelope" onclick="openEnvelope()" 
-         style="max-width: 520px; margin: 140px auto 40px; cursor: pointer; text-align: center;">
-        <div style="background: linear-gradient(145deg, #e11d48, #9f1239); padding: 80px 40px 100px; border-radius: 20px 20px 100px 100px; box-shadow: 0 30px 60px rgba(0,0,0,0.6);">
-            <i class="fa-solid fa-envelope" style="font-size: 5.5rem; margin-bottom: 25px; display: block;"></i>
-            <h1 class="romantic-font" style="font-size: 3.2rem; margin: 10px 0;">For My Love</h1>
-            <p style="opacity: 0.9;">Tap to open your letter 💌</p>
+    <div id="envelope" onclick="openEnvelope()" style="max-width: 520px; margin: 100px auto; cursor: pointer; text-align: center;">
+        <div class="glass" style="padding: 80px 40px 100px; border-radius: 20px 20px 100px 100px;">
+            <i class="fa-solid fa-envelope" style="font-size: 5rem; margin-bottom: 20px;"></i>
+            <h1 class="romantic-font" style="font-size: 3rem;">For My Love</h1>
+            <p>Tap to open 💌</p>
         </div>
     </div>
 
     <!-- Content -->
-    <div id="content" style="display: none; max-width: 700px; margin: 0 auto; padding: 20px;">
+    <div id="content" style="display: none; max-width: 720px; margin: 0 auto; padding: 20px;">
         <h1 class="romantic-font" style="text-align: center; font-size: 3rem; color: #fda4af;">My Dearest [Her Name]</h1>
-        
-        <div style="background: rgba(255,255,255,0.1); padding: 30px; border-radius: 24px; margin: 40px 0;">
-            <h2 style="margin-bottom: 20px;">Our Memories</h2>
-            <div id="gallery" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;"></div>
-        </div>
+
+        <div id="slideshow"></div>
     </div>
 
-    <!-- Background Music -->
+    <!-- Music -->
     <audio id="bgMusic" loop>
         <source src="Tahanan - Wedding Version (c) El Manu & Jessy Kang [Official Audio].mp3" type="audio/mpeg">
     </audio>
@@ -61,43 +111,44 @@
         function startMusic() {
             music.play().then(() => {
                 const btn = document.getElementById('playBtn');
-                btn.style.transition = 'all 0.6s';
                 btn.style.opacity = '0';
-                btn.style.transform = 'scale(0.8)';
                 setTimeout(() => btn.style.display = 'none', 600);
-            }).catch(err => {
-                console.error(err);
-                alert("Music file not found or can't be played. Make sure the mp3 file is in the same folder as index.html");
-            });
+            }).catch(() => alert("Tap again to play music"));
         }
 
         function openEnvelope() {
-            const envelope = document.getElementById('envelope');
-            envelope.style.opacity = '0';
-            envelope.style.transform = 'scale(0.6)';
-
-            setTimeout(() => {
-                envelope.style.display = 'none';
-                document.getElementById('content').style.display = 'block';
-
-                if (music.paused) startMusic();
-
-                initGallery();
-            }, 800);
+            document.getElementById('envelope').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            if (music.paused) startMusic();
+            initSlideshow();
         }
 
-        function initGallery() {
-            const gallery = document.getElementById('gallery');
-            const urls = [
-                "https://picsum.photos/id/1015/600/400",
-                "https://picsum.photos/id/237/600/400",
-                "https://picsum.photos/id/1005/600/400"
+        function initSlideshow() {
+            const slideshow = document.getElementById('slideshow');
+            const slides = [
+                {url: "https://picsum.photos/id/1015/800/600", note: "This moment still makes my heart race 💕"},
+                {url: "https://picsum.photos/id/237/800/600", note: "I fall in love with you every time I see this"},
+                {url: "https://picsum.photos/id/1005/800/600", note: "You're my favorite memory"},
             ];
-            urls.forEach(url => {
+
+            slides.forEach((slide, i) => {
                 const div = document.createElement('div');
-                div.innerHTML = `<img src="${url}" style="width:100%; border-radius:16px; cursor:pointer;" onclick="alert('💕 This memory makes my heart flutter')">`;
-                gallery.appendChild(div);
+                div.className = `slide ${i === 0 ? 'active' : ''}`;
+                div.innerHTML = `
+                    <img src="${slide.url}">
+                    <div class="floating-note">${slide.note}</div>
+                `;
+                slideshow.appendChild(div);
             });
+
+            // Auto slideshow
+            let current = 0;
+            setInterval(() => {
+                const allSlides = document.querySelectorAll('.slide');
+                allSlides[current].classList.remove('active');
+                current = (current + 1) % allSlides.length;
+                allSlides[current].classList.add('active');
+            }, 5000);
         }
     </script>
 </body>
