@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Love 💕</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Playfair Display', serif;
+        }
+        .romantic-font {
+            font-family: 'Dancing Script', cursive;
+        }
+        .heart {
+            animation: heartbeat 1.5s infinite;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        .note {
+            transition: all 0.4s ease;
+        }
+        .note:hover {
+            transform: rotate(2deg) scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-pink-100 via-purple-100 to-rose-100 min-h-screen">
+    <!-- Background hearts -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute text-6xl text-pink-300/30 top-10 left-10 heart">💗</div>
+        <div class="absolute text-5xl text-purple-300/30 top-32 right-20 heart" style="animation-delay: 0.5s;">💖</div>
+        <div class="absolute text-7xl text-rose-300/30 bottom-40 left-32 heart" style="animation-delay: 1s;">💘</div>
+        <div class="absolute text-4xl text-pink-300/30 bottom-20 right-40 heart" style="animation-delay: 1.5s;">💕</div>
+    </div>
+
+    <div class="max-w-4xl mx-auto relative z-10 p-6">
+        <!-- Header -->
+        <header class="text-center py-12">
+            <div class="inline-flex items-center gap-3 mb-6">
+                <i class="fa-solid fa-heart text-5xl text-rose-500 heart"></i>
+                <h1 class="text-6xl romantic-font text-rose-600">My Dearest [Her Name]</h1>
+                <i class="fa-solid fa-heart text-5xl text-rose-500 heart"></i>
+            </div>
+            <p class="text-xl text-rose-700/80 italic">Every beat of my heart says your name</p>
+        </header>
+
+        <!-- Hero Message -->
+        <div class="bg-white/80 backdrop-blur-lg rounded-3xl p-10 shadow-2xl mb-12 text-center border border-rose-200">
+            <p class="text-3xl leading-relaxed romantic-font text-rose-700">
+                "From the moment I met you, my world became brighter.<br>
+                You make every ordinary day feel like a fairytale.<br>
+                I love you more than yesterday, but less than tomorrow 💕"
+            </p>
+            <div class="mt-8 flex justify-center gap-4">
+                <button onclick="playMusic()" 
+                        class="px-8 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-full flex items-center gap-3 transition-all">
+                    <i class="fa-solid fa-music"></i>
+                    <span>Play Our Song</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Music Player -->
+        <div class="mb-12">
+            <div class="bg-white/70 rounded-3xl p-6 shadow-xl">
+                <h2 class="text-2xl font-bold text-rose-600 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-music"></i> Our Love Playlist
+                </h2>
+                <audio id="loveSong" controls class="w-full rounded-2xl">
+                    <!-- Replace with your song URLs (free royalty-free or your own hosted) -->
+                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+                <p class="text-sm text-rose-500 mt-3 text-center">Tip: Add your favorite love songs here</p>
+            </div>
+        </div>
+
+        <!-- Photo Gallery -->
+        <div class="mb-12">
+            <h2 class="text-3xl romantic-font text-center text-rose-600 mb-8">Our Beautiful Moments 📸</h2>
+            <div id="gallery" class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Default images - replace src with your photos -->
+                <div class="group relative overflow-hidden rounded-3xl shadow-xl">
+                    <img src="https://picsum.photos/id/1015/600/800" 
+                         class="w-full h-80 object-cover transition-transform group-hover:scale-110" alt="Memory 1">
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 text-white">
+                        <p class="text-sm">Our first date 💕</p>
+                    </div>
+                </div>
+                <!-- Add more images by duplicating this block -->
+            </div>
+            <div class="text-center mt-8">
+                <button onclick="addPhotoPrompt()" 
+                        class="px-6 py-3 bg-white border-2 border-rose-400 text-rose-500 rounded-2xl hover:bg-rose-50 flex items-center gap-2 mx-auto">
+                    <i class="fa-solid fa-plus"></i>
+                    Add New Memory
+                </button>
+            </div>
+        </div>
+
+        <!-- Sweet Notes Section -->
+        <div class="bg-white/70 rounded-3xl p-8 shadow-2xl mb-12">
+            <h2 class="text-3xl romantic-font text-rose-600 mb-6 flex items-center justify-center gap-3">
+                <i class="fa-solid fa-sticky-note"></i> Love Notes For You
+            </h2>
+            
+            <div id="notesContainer" class="space-y-6 mb-8 min-h-[300px]">
+                <!-- Notes will be added here by JS -->
+            </div>
+
+            <div class="flex gap-4">
+                <input id="noteInput" 
+                       type="text" 
+                       placeholder="Write a sweet note for her..." 
+                       class="flex-1 px-6 py-4 rounded-2xl border border-rose-200 focus:outline-none focus:border-rose-400">
+                <button onclick="addNote()" 
+                        class="px-10 py-4 bg-gradient-to-r from-rose-500 to-purple-500 text-white rounded-2xl font-medium hover:brightness-110 transition-all">
+                    Send 💌
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center py-12 text-rose-500/70">
+            <p class="romantic-font text-2xl">Made with endless love for you</p>
+            <p class="mt-2 text-sm">Forever yours • [Your Name]</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tailwind script already loaded
+
+        // Music control
+        function playMusic() {
+            const audio = document.getElementById('loveSong');
+            if (audio.paused) {
+                audio.play();
+            } else {
+                audio.pause();
+            }
+        }
+
+        // Add note functionality
+        function addNote() {
+            const input = document.getElementById('noteInput');
+            const text = input.value.trim();
+            
+            if (!text) return;
+            
+            const notesContainer = document.getElementById('notesContainer');
+            
+            const noteEl = document.createElement('div');
+            noteEl.className = `note bg-white p-6 rounded-3xl shadow-md border border-rose-100 max-w-md mx-auto`;
+            
+            const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            
+            noteEl.innerHTML = `
+                <div class="flex justify-between items-start mb-3">
+                    <span class="text-rose-400 text-sm">${date}</span>
+                    <i onclick="this.parentElement.parentElement.remove()" 
+                       class="fa-solid fa-xmark cursor-pointer hover:text-rose-500"></i>
+                </div>
+                <p class="text-lg leading-relaxed text-rose-700">${text}</p>
+                <div class="text-right mt-4">
+                    <span class="text-rose-300 text-xl">💕</span>
+                </div>
+            `;
+            
+            notesContainer.appendChild(noteEl);
+            input.value = '';
+            
+            // Save to localStorage
+            saveNotes();
+        }
+
+        // Save notes to localStorage
+        function saveNotes() {
+            const notes = Array.from(document.querySelectorAll('.note p')).map(p => p.textContent);
+            localStorage.setItem('loveNotes', JSON.stringify(notes));
+        }
+
+        // Load saved notes
+        function loadNotes() {
+            const saved = localStorage.getItem('loveNotes');
+            if (!saved) return;
+            
+            const notes = JSON.parse(saved);
+            const container = document.getElementById('notesContainer');
+            
+            notes.forEach(text => {
+                const noteEl = document.createElement('div');
+                noteEl.className = `note bg-white p-6 rounded-3xl shadow-md border border-rose-100 max-w-md mx-auto`;
+                const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                
+                noteEl.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-rose-400 text-sm">${date}</span>
+                        <i onclick="this.parentElement.parentElement.remove()" 
+                           class="fa-solid fa-xmark cursor-pointer hover:text-rose-500"></i>
+                    </div>
+                    <p class="text-lg leading-relaxed text-rose-700">${text}</p>
+                    <div class="text-right mt-4">
+                        <span class="text-rose-300 text-xl">💕</span>
+                    </div>
+                `;
+                container.appendChild(noteEl);
+            });
+        }
+
+        // Add photo prompt
+        function addPhotoPrompt() {
+            const url = prompt("Enter image URL (direct link to photo):");
+            if (!url) return;
+            
+            const caption = prompt("Add a short caption for this memory:", "Our special moment");
+            
+            const gallery = document.getElementById('gallery');
+            const newPhoto = document.createElement('div');
+            newPhoto.className = "group relative overflow-hidden rounded-3xl shadow-xl";
+            newPhoto.innerHTML = `
+                <img src="${url}" 
+                     class="w-full h-80 object-cover transition-transform group-hover:scale-110" alt="Memory">
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 text-white">
+                    <p class="text-sm">${caption}</p>
+                </div>
+            `;
+            gallery.appendChild(newPhoto);
+        }
+
+        // Keyboard support for notes
+        document.getElementById('noteInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addNote();
+            }
+        });
+
+        // Initialize
+        window.onload = function() {
+            loadNotes();
+            
+            // Welcome animation
+            console.log("%c❤️ Made with love for your girlfriend ❤️", "color: #e11d48; font-family: cursive; font-size: 18px;");
+        };
+    </script>
+</body>
+</html>
