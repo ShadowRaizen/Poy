@@ -28,6 +28,26 @@
             border: 1px solid rgba(255, 255, 255, 0.25);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
         }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 380px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -50,6 +70,19 @@
         </div>
     </div>
 
+    <!-- Love Question -->
+    <div id="questionScreen" style="display: none; text-align: center; padding: 80px 20px;">
+        <h1 class="romantic-font" style="font-size: 2.8rem; margin-bottom: 50px;">Do you love me?</h1>
+        <button onclick="answerYes()" 
+                style="padding: 20px 60px; background: #e11d48; color: white; border: none; border-radius: 50px; font-size: 1.6rem; margin: 15px;">
+            Yes, I love you 💕
+        </button>
+        <button onclick="answerNo()" 
+                style="padding: 20px 60px; background: #6b7280; color: white; border: none; border-radius: 50px; font-size: 1.6rem; margin: 15px;">
+            No
+        </button>
+    </div>
+
     <!-- Envelope -->
     <div id="envelope" onclick="openEnvelope()" style="display: none; max-width: 520px; margin: 80px auto; cursor: pointer; text-align: center; z-index: 10; position: relative;">
         <div class="glass" style="padding: 80px 40px 110px; border-radius: 20px 20px 110px 110px;">
@@ -61,13 +94,21 @@
 
     <!-- Sweet Message -->
     <div id="messageScreen" style="display: none; max-width: 700px; margin: 40px auto; padding: 30px; text-align: center; z-index: 10; position: relative;">
-        <!-- Message content same as before -->
         <h1 class="romantic-font" style="font-size: 2.8rem; color: #fda4af; margin-bottom: 30px;">Mahal ko,</h1>
         <div style="background: rgba(255,255,255,0.1); padding: 40px; border-radius: 24px; line-height: 1.85; font-size: 1.22rem; text-align: left;">
-            <p>Mahal, mula noong una kitang makilala, alam kong ikaw na ang taong hinihintay ko sa buong buhay ko...</p>
-            <!-- (full message same as before) -->
+            <p>Mahal, mula noong una kitang makilala, alam kong ikaw na ang taong hinihintay ko sa buong buhay ko. Ikaw ang liwanag sa mga madilim kong araw, ang yakap na nagpapakalma sa kaba ko, at ang dahilan kung bakit naniniwala pa rin ako sa walang hanggang pag-ibig.</p>
+            
+            <p>Pasensya na sa lahat ng beses na nasaktan kita. Pasensya na sa mga salita na hindi ko dapat sinabi, sa mga sandaling hinayaan kong maging malamig ang puso ko, at sa mga pagkakataong hindi kita napahalagahan nang tama. Hindi ko sinasadya na saktan ka. Mahal na mahal kita at ang bawat luha mo ay parang kutsilyo sa puso ko. Hindi na mauulit 'yon. Pangako ko 'yan.</p>
+            
+            <p>Ngayon at sa mga susunod na araw, gusto kong patunayan sa'yo na ikaw ang pinakamahalaga sa buhay ko. Gusto kong maging mas mabuting tao para sa'yo. Gusto kong maging yung taong laging nandiyan kapag kailangan mo ako.</p>
+            
+            <p>Ikaw ang tahanan ko. Ikaw ang pangarap ko. At pangako ko sa'yo — magmamahal ako sa'yo nang buong-buo, nang tapat, at nang walang katapusan. Hanggang sa huling hininga ko, ikaw pa rin.</p>
+            
+            <p class="romantic-font" style="font-size: 2.2rem; margin-top: 40px; text-align: center;">Forever yours,<br>[Your Name]</p>
         </div>
-        <button onclick="showSlideshow()" style="margin-top: 50px; padding: 18px 45px; background: #e11d48; color: white; border: none; border-radius: 50px; font-size: 1.35rem;">
+
+        <button onclick="showSlideshow()" 
+                style="margin-top: 50px; padding: 18px 45px; background: #e11d48; color: white; border: none; border-radius: 50px; font-size: 1.35rem;">
             Click here mi amore 💕
         </button>
     </div>
@@ -75,6 +116,17 @@
     <!-- Slideshow -->
     <div id="slideshowScreen" style="display: none; max-width: 720px; margin: 0 auto; padding: 20px; z-index: 10; position: relative;">
         <div id="stackContainer" style="position: relative; height: 520px; max-width: 620px; margin: 40px auto;"></div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="modal" style="display: none;">
+        <div class="modal-content glass">
+            <p id="modalText" style="font-size: 1.4rem; margin-bottom: 30px;"></p>
+            <button onclick="closeModal()" 
+                    style="padding: 12px 32px; background: #e11d48; color: white; border: none; border-radius: 50px;">
+                Close
+            </button>
+        </div>
     </div>
 
     <!-- Background Music -->
@@ -92,7 +144,8 @@
             document.getElementById('startGameBtn').style.display = 'none';
             score = 0;
             timeLeft = 10;
-            updateScore();
+            document.getElementById('score').textContent = 'Score: 0';
+            document.getElementById('timer').textContent = '10';
 
             gameInterval = setInterval(() => {
                 timeLeft--;
@@ -100,52 +153,100 @@
                 if (timeLeft <= 0) endGame();
             }, 1000);
 
-            // Spawn hearts
             setInterval(() => {
                 if (timeLeft > 0) spawnHeart();
-            }, 300);
+            }, 280);
         }
 
         function spawnHeart() {
             const area = document.getElementById('gameArea');
             const heart = document.createElement('div');
             heart.style.position = 'absolute';
-            heart.style.fontSize = '3rem';
-            heart.style.left = Math.random() * 80 + '%';
-            heart.style.top = Math.random() * 70 + '%';
+            heart.style.fontSize = '3.2rem';
+            heart.style.left = Math.random() * 85 + '%';
+            heart.style.top = Math.random() * 75 + '%';
             heart.style.cursor = 'pointer';
             heart.textContent = '💕';
             heart.onclick = () => {
                 score++;
-                updateScore();
+                document.getElementById('score').textContent = 'Score: ' + score;
                 heart.remove();
             };
             area.appendChild(heart);
-
-            setTimeout(() => heart.remove(), 1500);
-        }
-
-        function updateScore() {
-            document.getElementById('score').textContent = 'Score: ' + score;
+            setTimeout(() => heart.remove(), 1400);
         }
 
         function endGame() {
             clearInterval(gameInterval);
-            alert(`Game Over! Your score: ${score} hearts 💕\n\nYou unlocked the letter!`);
+            showModal(`Game Over! Your score: ${score} hearts 💕`);
             document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('questionScreen').style.display = 'block';
+        }
+
+        function showModal(text) {
+            document.getElementById('modalText').innerHTML = text;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function answerYes() {
+            showModal("I knew it! 💕 Now open your letter...");
+            document.getElementById('questionScreen').style.display = 'none';
             document.getElementById('envelope').style.display = 'block';
-            music.play().catch(() => {});
+        }
+
+        function answerNo() {
+            document.getElementById('questionScreen').innerHTML = `
+                <h1 class="romantic-font" style="font-size: 3rem; margin-top: 100px; color: #fda4af;">I'm sorry to hear that...</h1>
+                <p style="font-size: 1.4rem; margin-top: 30px;">I hope one day you'll feel the same way.</p>
+                <p style="margin-top: 50px;">Goodbye for now 💔</p>
+            `;
         }
 
         function openEnvelope() {
             document.getElementById('envelope').style.display = 'none';
             document.getElementById('messageScreen').style.display = 'block';
+            music.play().catch(() => {});
         }
 
         function showSlideshow() {
             document.getElementById('messageScreen').style.display = 'none';
             document.getElementById('slideshowScreen').style.display = 'block';
-            // Add slideshow code here if needed
+            initAutoSlideshow();
+        }
+
+        function initAutoSlideshow() {
+            const container = document.getElementById('stackContainer');
+            const slides = [
+                {url: "https://picsum.photos/id/1015/800/600", note: "This moment still gives me butterflies every time I see it. You looked so beautiful that day 💕"},
+                {url: "https://picsum.photos/id/237/800/600", note: "I fall in love with you more and more every single day. You are my greatest blessing"},
+                {url: "https://picsum.photos/id/1005/800/600", note: "You're my safe place, my home, and my biggest dream come true. I can't imagine life without you"},
+                {url: "https://picsum.photos/id/201/800/600", note: "Thank you for choosing me every day. I promise to love you with all my heart forever"},
+                {url: "https://picsum.photos/id/133/800/600", note: "Forever isn't long enough with you. I want to spend every tomorrow by your side"}
+            ];
+
+            let current = 0;
+
+            slides.forEach((slide, i) => {
+                const card = document.createElement('div');
+                card.className = `slide ${i === 0 ? 'active' : ''}`;
+                card.style.cssText = 'position:absolute;inset:0;';
+                card.innerHTML = `
+                    <img src="${slide.url}" style="width:100%;height:100%;object-fit:cover;">
+                    <div class="slide-note">${slide.note}</div>
+                `;
+                container.appendChild(card);
+            });
+
+            setInterval(() => {
+                const allSlides = document.querySelectorAll('.slide');
+                allSlides[current].classList.remove('active');
+                current = (current + 1) % slides.length;
+                allSlides[current].classList.add('active');
+            }, 15000);
         }
     </script>
 </body>
