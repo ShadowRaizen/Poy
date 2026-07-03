@@ -74,9 +74,9 @@
 
     <!-- Sweet Message -->
     <div id="messageScreen" style="display: none; max-width: 700px; margin: 40px auto; padding: 30px; text-align: center; z-index: 10; position: relative;">
-        <h1 class="romantic-font" style="font-size: 2.8rem; color: #fda4af; margin-bottom: 30px;">Mahal ko,</h1>
+        <h1 class="romantic-font" style="font-size: 2.8rem; color: #fda4af; margin-bottom: 30px;">Poy,</h1>
         <div style="background: rgba(255,255,255,0.1); padding: 40px; border-radius: 24px; line-height: 1.85; font-size: 1.22rem; text-align: left;">
-            <p>Mahal, mula noong una kitang makilala, alam kong ikaw na ang taong hinihintay ko sa buong buhay ko. Ikaw ang liwanag sa mga madilim kong araw, ang yakap na nagpapakalma sa kaba ko, at ang dahilan kung bakit naniniwala pa rin ako sa walang hanggang pag-ibig.</p>
+            <p>Poy, mula noong una kitang makilala, alam kong ikaw na ang taong hinihintay ko sa buong buhay ko. Ikaw ang liwanag sa mga madilim kong araw, ang yakap na nagpapakalma sa kaba ko, at ang dahilan kung bakit naniniwala pa rin ako sa walang hanggang pag-ibig.</p>
             
             <p>Pasensya na sa lahat ng beses na nasaktan kita. Pasensya na sa mga salita na hindi ko dapat sinabi, sa mga sandaling hinayaan kong maging malamig ang puso ko, at sa mga pagkakataong hindi kita napahalagahan nang tama. Hindi ko sinasadya na saktan ka. Mahal na mahal kita at ang bawat luha mo ay parang kutsilyo sa puso ko. Hindi na mauulit 'yon. Pangako ko 'yan.</p>
             
@@ -84,12 +84,12 @@
             
             <p>Ikaw ang tahanan ko. Ikaw ang pangarap ko. At pangako ko sa'yo — magmamahal ako sa'yo nang buong-buo, nang tapat, at nang walang katapusan. Hanggang sa huling hininga ko, ikaw pa rin.</p>
             
-            <p class="romantic-font" style="font-size: 2.2rem; margin-top: 40px; text-align: center;">Forever yours,<br>[Your Name]</p>
+            <p class="romantic-font" style="font-size: 2.2rem; margin-top: 40px; text-align: center;">Forever yours,<br>Marky</p>
         </div>
 
         <button onclick="showSlideshow()" 
                 style="margin-top: 50px; padding: 18px 45px; background: #e11d48; color: white; border: none; border-radius: 50px; font-size: 1.35rem;">
-            Click here mi amore 💕
+            Click Here Mi Amore 💕
         </button>
     </div>
 
@@ -156,7 +156,10 @@
             music.play().catch(() => {});
             alert("I knew it! 💕 Now open your letter...");
             document.getElementById('questionScreen').style.display = 'none';
-            document.getElementById('envelope').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('envelope').style.display = 'block';
+            }, 5000);
         }
 
         function answerNo() {
