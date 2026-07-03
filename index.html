@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    <!-- Long Sweet Message -->
+    <!-- Sweet Message -->
     <div id="messageScreen" style="display: none; max-width: 700px; margin: 40px auto; padding: 30px; text-align: center;">
         <h1 class="romantic-font" style="font-size: 2.8rem; color: #fda4af; margin-bottom: 30px;">Mahal ko,</h1>
         <div style="background: rgba(255,255,255,0.1); padding: 40px; border-radius: 24px; line-height: 1.85; font-size: 1.22rem; text-align: left;">
@@ -47,11 +47,11 @@
             
             <p>Pasensya na sa lahat ng beses na nasaktan kita. Pasensya na sa mga salita na hindi ko dapat sinabi, sa mga sandaling hinayaan kong maging malamig ang puso ko, at sa mga pagkakataong hindi kita napahalagahan nang tama. Hindi ko sinasadya na saktan ka. Mahal na mahal kita at ang bawat luha mo ay parang kutsilyo sa puso ko. Hindi na mauulit 'yon. Pangako ko 'yan.</p>
             
-            <p>Ngayon at sa mga susunod na araw, gusto kong patunayan sa'yo na ikaw ang pinakamahalaga sa buhay ko. Gusto kong maging mas mabuting tao para sa'yo. Gusto kong maging yung taong laging nandiyan kapag kailangan mo ako — sa tuwa, sa lungkot, sa tagumpay, at kahit sa mga simpleng araw lang.</p>
+            <p>Ngayon at sa mga susunod na araw, gusto kong patunayan sa'yo na ikaw ang pinakamahalaga sa buhay ko. Gusto kong maging mas mabuting tao para sa'yo. Gusto kong maging yung taong laging nandiyan kapag kailangan mo ako.</p>
             
-            <p>Ikaw ang tahanan ko. Ikaw ang pangarap ko. At pangako ko sa'yo — magmamahal ako sa'yo nang buong-buo, nang tapat, at nang walang katapusan. Kahit anong mangyari, kahit saan tayo dalhin ng buhay, pipiliin kita araw-araw. Hanggang sa huling hininga ko, ikaw pa rin.</p>
+            <p>Ikaw ang tahanan ko. Ikaw ang pangarap ko. At pangako ko sa'yo — magmamahal ako sa'yo nang buong-buo, nang tapat, at nang walang katapusan. Hanggang sa huling hininga ko, ikaw pa rin.</p>
             
-            <p class="romantic-font" style="font-size: 2.4rem; margin-top: 40px; text-align: center;">I love you more than yesterday, but less than tomorrow.<br>Forever yours,<br>[Your Name]</p>
+            <p class="romantic-font" style="font-size: 2.2rem; margin-top: 40px; text-align: center;">Forever yours,<br>[Your Name]</p>
         </div>
 
         <button onclick="showSlideshow()" 
@@ -66,21 +66,19 @@
     </div>
 
     <!-- Background Music -->
-    <audio id="bgMusic" loop>
+    <audio id="bgMusic" loop playsinline>
         <source src="Tahanan - Wedding Version (c) El Manu & Jessy Kang [Official Audio].mp3" type="audio/mpeg">
     </audio>
 
     <script>
         const music = document.getElementById('bgMusic');
 
-        window.addEventListener('load', () => {
-            music.play().catch(() => {});
-        });
-
         function openEnvelope() {
             document.getElementById('envelope').style.display = 'none';
             document.getElementById('messageScreen').style.display = 'block';
-            if (music.paused) music.play().catch(() => {});
+            
+            // Play music on user interaction (best chance for mobile)
+            music.play().catch(() => {});
         }
 
         function showSlideshow() {
@@ -96,15 +94,14 @@
                 {url: "https://picsum.photos/id/237/800/600", note: "I fall in love with you every single day"},
                 {url: "https://picsum.photos/id/1005/800/600", note: "You're my safe place and my biggest dream"},
                 {url: "https://picsum.photos/id/201/800/600", note: "Thank you for choosing me every day"},
-                {url: "https://picsum.photos/id/133/800/600", note: "Forever isn't long enough with you"},
-                {url: "https://picsum.photos/id/1016/800/600", note: "You are my favorite hello and hardest goodbye"}
+                {url: "https://picsum.photos/id/133/800/600", note: "Forever isn't long enough with you"}
             ];
 
             let current = 0;
 
             slides.forEach((slide, i) => {
                 const card = document.createElement('div');
-                card.style.cssText = `position:absolute;inset:0;border-radius:24px;overflow:hidden;box-shadow:0 15px 35px rgba(0,0,0,0.5);cursor:pointer;opacity:${i===0?1:0};transform:scale(${i===0?1:0.92});`;
+                card.style.cssText = `position:absolute;inset:0;border-radius:24px;overflow:hidden;box-shadow:0 15px 35px rgba(0,0,0,0.5);cursor:pointer;opacity:${i===0?1:0};transform:scale(${i===0?1:0.9});`;
                 card.innerHTML = `
                     <img src="${slide.url}" style="width:100%;height:100%;object-fit:cover;">
                     <div style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);padding:14px 32px;border-radius:50px;font-style:italic;max-width:80%;text-align:center;">${slide.note}</div>
@@ -113,7 +110,7 @@
                     current = (current + 1) % slides.length;
                     document.querySelectorAll('#stackContainer > div').forEach((c, idx) => {
                         c.style.opacity = idx === current ? '1' : '0';
-                        c.style.transform = idx === current ? 'scale(1)' : 'scale(0.92)';
+                        c.style.transform = idx === current ? 'scale(1)' : 'scale(0.9)';
                     });
                 };
                 container.appendChild(card);
