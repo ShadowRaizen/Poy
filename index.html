@@ -8,7 +8,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
 
-        * { transition: all 0.5s ease; }
+        * { transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
 
         body {
             font-family: 'Playfair Display', serif;
@@ -25,25 +25,82 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
         }
+
+        #envelope {
+            max-width: 520px;
+            margin: 80px auto;
+            cursor: pointer;
+        }
+        .envelope-body {
+            background: linear-gradient(145deg, #e11d48, #9f1239);
+            padding: 80px 40px 110px;
+            border-radius: 20px 20px 110px 110px;
+            box-shadow: 0 35px 70px rgba(0,0,0,0.6);
+        }
+
+        #content { display: none; max-width: 720px; margin: 0 auto; padding: 20px; }
+
+        .stack-container {
+            position: relative;
+            height: 480px;
+            max-width: 620px;
+            margin: 40px auto;
+        }
+        .stack-card {
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.9) rotate(0deg);
+        }
+        .stack-card.active {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+            z-index: 10;
+        }
+        .stack-card img, .stack-card video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .sweet-note {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.75);
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-style: italic;
+            max-width: 80%;
+            text-align: center;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
 
     <!-- Envelope -->
-    <div id="envelope" onclick="openEnvelope()" 
-         style="max-width: 520px; margin: 100px auto 40px; cursor: pointer; text-align: center;">
-        <div class="glass" style="padding: 80px 40px 100px; border-radius: 20px 20px 100px 100px;">
-            <i class="fa-solid fa-envelope" style="font-size: 5.5rem; margin-bottom: 25px; display: block;"></i>
-            <h1 class="romantic-font" style="font-size: 3.2rem; margin: 10px 0;">For My Love</h1>
-            <p style="opacity: 0.9;">Tap to open your letter 💌</p>
+    <div id="envelope" onclick="openEnvelope()">
+        <div class="envelope-body glass">
+            <div style="text-align: center; color: white;">
+                <i class="fa-solid fa-envelope" style="font-size: 5.5rem; margin-bottom: 20px;"></i>
+                <h1 class="romantic-font" style="font-size: 3.2rem;">For My Love</h1>
+                <p style="opacity: 0.9;">Tap to open your letter 💌</p>
+            </div>
         </div>
     </div>
 
     <!-- Content -->
-    <div id="content" style="display: none; max-width: 720px; margin: 0 auto; padding: 20px;">
-        <h1 class="romantic-font" style="text-align: center; font-size: 3rem; color: #fda4af;">My Dearest [Her Name]</h1>
-        
-        <div id="slideshow" style="position: relative; max-width: 700px; margin: 40px auto; height: 420px; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5);"></div>
+    <div id="content">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 class="romantic-font" style="font-size: 3rem; color: #fda4af;">My Dearest [Her Name]</h1>
+        </div>
+
+        <div class="stack-container" id="stackContainer"></div>
     </div>
 
     <!-- Background Music -->
@@ -54,11 +111,9 @@
     <script>
         const music = document.getElementById('bgMusic');
 
-        // Try to play music as soon as the page loads
+        // Auto attempt on load
         window.addEventListener('load', () => {
-            music.play().catch(() => {
-                // If blocked, it will try again when envelope is opened
-            });
+            music.play().catch(() => {});
         });
 
         function openEnvelope() {
@@ -70,45 +125,38 @@
                 envelope.style.display = 'none';
                 document.getElementById('content').style.display = 'block';
 
-                // Ensure music is playing
-                if (music.paused) {
-                    music.play().catch(() => {});
-                }
+                if (music.paused) music.play().catch(() => {});
 
-                initSlideshow();
+                initStack();
             }, 800);
         }
 
-        function initSlideshow() {
-            const slideshow = document.getElementById('slideshow');
-            const slides = [
-                {url: "https://picsum.photos/id/1015/800/600", note: "This moment still makes my heart race 💕"},
-                {url: "https://picsum.photos/id/237/800/600", note: "I fall in love with you every time"},
-                {url: "https://picsum.photos/id/1005/800/600", note: "You're my favorite memory"}
+        function initStack() {
+            const container = document.getElementById('stackContainer');
+            const items = [
+                { type: "img", url: "https://picsum.photos/id/1015/800/600", note: "This moment still gives me butterflies 💕" },
+                { type: "img", url: "https://picsum.photos/id/237/800/600", note: "I fall in love with you every single day" },
+                { type: "img", url: "https://picsum.photos/id/1005/800/600", note: "You're my favorite place to be" },
+                { type: "img", url: "https://picsum.photos/id/201/800/600", note: "Forever grateful for us 💗" }
             ];
 
-            slides.forEach((slide, i) => {
-                const div = document.createElement('div');
-                div.className = `slide ${i === 0 ? 'active' : ''}`;
-                div.style.cssText = 'position:absolute;inset:0;opacity:0;visibility:hidden;';
-                if (i === 0) div.style.cssText += 'opacity:1;visibility:visible;';
-                div.innerHTML = `
-                    <img src="${slide.url}" style="width:100%;height:100%;object-fit:cover;">
-                    <div style="position:absolute;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.7);padding:12px 28px;border-radius:30px;font-style:italic;">${slide.note}</div>
-                `;
-                slideshow.appendChild(div);
-            });
+            let currentIndex = 0;
 
-            // Auto slideshow
-            let current = 0;
-            setInterval(() => {
-                const all = document.querySelectorAll('.slide');
-                all[current].style.opacity = '0';
-                all[current].style.visibility = 'hidden';
-                current = (current + 1) % all.length;
-                all[current].style.opacity = '1';
-                all[current].style.visibility = 'visible';
-            }, 4500);
+            items.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = `stack-card glass ${index === 0 ? 'active' : ''}`;
+                card.innerHTML = `
+                    <img src="${item.url}">
+                    <div class="sweet-note">${item.note}</div>
+                `;
+                card.onclick = () => {
+                    currentIndex = (currentIndex + 1) % items.length;
+                    document.querySelectorAll('.stack-card').forEach((c, i) => {
+                        c.classList.toggle('active', i === currentIndex);
+                    });
+                };
+                container.appendChild(card);
+            });
         }
     </script>
 </body>
