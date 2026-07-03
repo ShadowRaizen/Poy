@@ -9,7 +9,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
 
         * { 
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
             box-sizing: border-box;
         }
 
@@ -32,51 +32,14 @@
 
         .particle {
             position: fixed;
-            font-size: 1.9rem;
+            font-size: 2.2rem;
             pointer-events: none;
-            z-index: 5;
-            animation: floatParticle linear forwards;
+            z-index: 20;
+            animation: explosion linear forwards;
         }
-        @keyframes floatParticle {
-            0% { transform: translateY(110vh) scale(0.6); opacity: 0; }
-            20% { opacity: 0.9; }
-            100% { transform: translateY(-30vh) scale(1.3); opacity: 0; }
-        }
-
-        /* Smooth Slide Transitions */
-        .slide {
-            position: absolute;
-            inset: 0;
-            border-radius: 24px;
-            overflow: hidden;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            opacity: 0;
-            transform: scale(0.95);
-            visibility: hidden;
-        }
-        .slide.active {
-            opacity: 1;
-            transform: scale(1);
-            visibility: visible;
-            z-index: 10;
-        }
-        .slide img, .slide video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .slide-note {
-            position: absolute;
-            bottom: 35px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.75);
-            padding: 16px 32px;
-            border-radius: 30px;
-            font-style: italic;
-            max-width: 85%;
-            text-align: center;
-            line-height: 1.6;
+        @keyframes explosion {
+            0% { transform: scale(0.2) translate(0, 0); opacity: 1; }
+            100% { transform: scale(1.4) translate(var(--x), var(--y)); opacity: 0; }
         }
     </style>
 </head>
@@ -113,7 +76,7 @@
         </button>
     </div>
 
-    <!-- Romantic Slideshow -->
+    <!-- Slideshow -->
     <div id="slideshowScreen" style="display: none; max-width: 720px; margin: 0 auto; padding: 20px; z-index: 10; position: relative;">
         <div id="stackContainer" style="position: relative; height: 520px; max-width: 620px; margin: 40px auto;"></div>
     </div>
@@ -126,28 +89,34 @@
     <script>
         const music = document.getElementById('bgMusic');
 
-        function createHeartParticle() {
-            const heart = document.createElement('div');
-            heart.className = 'particle';
-            heart.textContent = ['💕','❤️','💖','💗','💘'][Math.floor(Math.random()*5)];
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (8 + Math.random() * 9) + 's';
-            heart.style.fontSize = (1.6 + Math.random() * 1.4) + 'rem';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 17000);
-        }
-
-        function startParticles() {
-            setInterval(() => {
-                if (Math.random() > 0.4) createHeartParticle();
-            }, 380);
+        function createExplosion() {
+            const emojis = ['💕','❤️','💖','💗','💘','💍','🌹','🥰'];
+            for (let i = 0; i < 60; i++) {
+                setTimeout(() => {
+                    const p = document.createElement('div');
+                    p.className = 'particle';
+                    p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    p.style.left = Math.random() * 100 + 'vw';
+                    p.style.top = '45vh';
+                    p.style.animationDuration = (1.8 + Math.random() * 2.5) + 's';
+                    p.style.setProperty('--x', (Math.random() - 0.5) * 800 + 'px');
+                    p.style.setProperty('--y', (Math.random() - 0.8) * 600 + 'px');
+                    document.body.appendChild(p);
+                    setTimeout(() => p.remove(), 5000);
+                }, i * 8);
+            }
         }
 
         function openEnvelope() {
             document.getElementById('envelope').style.display = 'none';
-            document.getElementById('messageScreen').style.display = 'block';
-            music.play().catch(() => {});
-            startParticles();
+            
+            // Dramatic explosion effect
+            createExplosion();
+            
+            setTimeout(() => {
+                document.getElementById('messageScreen').style.display = 'block';
+                music.play().catch(() => {});
+            }, 1200);
         }
 
         function showSlideshow() {
@@ -174,12 +143,11 @@
                 card.style.cssText = 'position:absolute;inset:0;';
                 card.innerHTML = `
                     <img src="${slide.url}" style="width:100%;height:100%;object-fit:cover;">
-                    <div class="slide-note">${slide.note}</div>
+                    <div style="position:absolute;bottom:35px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);padding:16px 32px;border-radius:30px;font-style:italic;max-width:85%;text-align:center;">${slide.note}</div>
                 `;
                 container.appendChild(card);
             });
 
-            // Auto advance every 10 seconds with smooth transition
             setInterval(() => {
                 const allSlides = document.querySelectorAll('.slide');
                 allSlides[current].classList.remove('active');
