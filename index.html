@@ -32,14 +32,14 @@
 
         .particle {
             position: fixed;
-            font-size: 2.2rem;
+            font-size: 2.8rem; /* Bigger particles */
             pointer-events: none;
             z-index: 20;
             animation: explosion linear forwards;
         }
         @keyframes explosion {
-            0% { transform: scale(0.2) translate(0, 0); opacity: 1; }
-            100% { transform: scale(1.4) translate(var(--x), var(--y)); opacity: 0; }
+            0% { transform: scale(0.3) translate(0, 0); opacity: 1; }
+            100% { transform: scale(1.6) translate(var(--x), var(--y)); opacity: 0; }
         }
     </style>
 </head>
@@ -90,33 +90,33 @@
         const music = document.getElementById('bgMusic');
 
         function createExplosion() {
-            const emojis = ['💕','❤️','💖','💗','💘','💍','🌹','🥰'];
-            for (let i = 0; i < 60; i++) {
+            const emojis = ['💕','❤️','💖','💗','💘','🌹','💍','🥰'];
+            for (let i = 0; i < 80; i++) {  // More particles
                 setTimeout(() => {
                     const p = document.createElement('div');
                     p.className = 'particle';
                     p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-                    p.style.left = Math.random() * 100 + 'vw';
+                    p.style.left = '50%';
                     p.style.top = '45vh';
-                    p.style.animationDuration = (1.8 + Math.random() * 2.5) + 's';
-                    p.style.setProperty('--x', (Math.random() - 0.5) * 800 + 'px');
-                    p.style.setProperty('--y', (Math.random() - 0.8) * 600 + 'px');
+                    p.style.animationDuration = (1.5 + Math.random() * 2.2) + 's';
+                    p.style.setProperty('--x', (Math.random() - 0.5) * 900 + 'px');
+                    p.style.setProperty('--y', (Math.random() - 0.8) * 700 + 'px');
                     document.body.appendChild(p);
                     setTimeout(() => p.remove(), 5000);
-                }, i * 8);
+                }, i * 6);
             }
         }
 
         function openEnvelope() {
             document.getElementById('envelope').style.display = 'none';
             
-            // Dramatic explosion effect
+            // Big dramatic explosion
             createExplosion();
             
             setTimeout(() => {
                 document.getElementById('messageScreen').style.display = 'block';
                 music.play().catch(() => {});
-            }, 1200);
+            }, 1400);
         }
 
         function showSlideshow() {
