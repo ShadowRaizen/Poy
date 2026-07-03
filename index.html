@@ -10,7 +10,6 @@
 
         * { 
             box-sizing: border-box;
-            cursor: none !important;
         }
 
         body {
@@ -30,64 +29,42 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
         }
 
-        /* Pop-up Modal */
-        .modal {
-            display: none;
+        /* Parallax Background */
+        .parallax-bg {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            background: radial-gradient(circle at 50% 30%, rgba(251, 113, 133, 0.25) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: -1;
+            animation: parallaxMove 40s linear infinite;
         }
-        .modal-content {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 24px;
-            padding: 50px 40px;
-            max-width: 420px;
-            text-align: center;
+        @keyframes parallaxMove {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(40px, 30px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        .particle {
+            position: fixed;
+            font-size: 2.6rem;
+            pointer-events: none;
+            z-index: 20;
+            animation: floatHeart linear forwards;
+        }
+        @keyframes floatHeart {
+            0% { transform: translateY(110vh) scale(0.6) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translateY(-40vh) scale(1.4) rotate(25deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Game Screen -->
-    <div id="gameScreen">
-        <div style="text-align: center; padding: 40px 20px;">
-            <h1 class="romantic-font" style="font-size: 3rem; margin-bottom: 20px;">A Small Game For You 💕</h1>
-            <p style="font-size: 1.3rem; margin-bottom: 30px;">Tap as many hearts as you can in 10 seconds!</p>
-            
-            <div id="gameArea" style="position: relative; height: 420px; max-width: 420px; margin: 0 auto; background: rgba(0,0,0,0.3); border-radius: 24px; overflow: hidden; cursor: pointer;">
-                <div id="score" style="position: absolute; top: 15px; left: 15px; font-size: 1.8rem; font-weight: bold; z-index: 10;">Score: 0</div>
-                <div id="timer" style="position: absolute; top: 15px; right: 15px; font-size: 1.8rem; font-weight: bold; z-index: 10;">10</div>
-            </div>
-
-            <button onclick="startGame()" id="startGameBtn"
-                    style="margin-top: 30px; padding: 16px 40px; background: #e11d48; color: white; border: none; border-radius: 50px; font-size: 1.4rem;">
-                Play the Game 💕
-            </button>
-        </div>
-    </div>
-
-    <!-- Love Question Pop-up -->
-    <div id="questionModal" class="modal">
-        <div class="modal-content glass">
-            <h1 class="romantic-font" style="font-size: 2.8rem; margin-bottom: 40px;">Do you love me?</h1>
-            <button onclick="answerYes()" 
-                    style="padding: 18px 55px; background: #e11d48; color: white; border: none; border-radius: 50px; font-size: 1.5rem; margin: 10px;">
-                Yes, I love you 💕
-            </button>
-            <button onclick="answerNo()" 
-                    style="padding: 18px 55px; background: #6b7280; color: white; border: none; border-radius: 50px; font-size: 1.5rem; margin: 10px;">
-                No
-            </button>
-        </div>
-    </div>
+    <div class="parallax-bg"></div>
 
     <!-- Envelope -->
-    <div id="envelope" onclick="openEnvelope()" style="display: none; max-width: 520px; margin: 80px auto; cursor: pointer; text-align: center; z-index: 10; position: relative;">
+    <div id="envelope" onclick="openEnvelope()" 
+         style="max-width: 520px; margin: 80px auto; cursor: pointer; text-align: center; z-index: 10; position: relative;">
         <div class="glass" style="padding: 80px 40px 110px; border-radius: 20px 20px 110px 110px;">
             <i class="fa-solid fa-envelope" style="font-size: 5.5rem; margin-bottom: 25px;"></i>
             <h1 class="romantic-font" style="font-size: 3.2rem;">For My Love</h1>
@@ -128,76 +105,29 @@
 
     <script>
         const music = document.getElementById('bgMusic');
-        let score = 0;
-        let timeLeft = 10;
-        let gameInterval;
 
-        function startGame() {
-            document.getElementById('startGameBtn').style.display = 'none';
-            score = 0;
-            timeLeft = 10;
-            document.getElementById('score').textContent = 'Score: 0';
-            document.getElementById('timer').textContent = '10';
-
-            gameInterval = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer').textContent = timeLeft;
-                if (timeLeft <= 0) endGame();
-            }, 1000);
-
-            setInterval(() => {
-                if (timeLeft > 0) spawnHeart();
-            }, 280);
-        }
-
-        function spawnHeart() {
-            const area = document.getElementById('gameArea');
+        function createFloatingHeart() {
             const heart = document.createElement('div');
-            heart.style.position = 'absolute';
-            heart.style.fontSize = '3.2rem';
-            heart.style.left = Math.random() * 85 + '%';
-            heart.style.top = Math.random() * 75 + '%';
-            heart.style.cursor = 'pointer';
-            heart.textContent = '💕';
-            heart.onclick = () => {
-                score++;
-                document.getElementById('score').textContent = 'Score: ' + score;
-                heart.remove();
-            };
-            area.appendChild(heart);
-            setTimeout(() => heart.remove(), 1400);
+            heart.className = 'particle';
+            heart.textContent = ['💕','❤️','💖','💗','💘'][Math.floor(Math.random()*5)];
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (8 + Math.random() * 10) + 's';
+            heart.style.fontSize = (1.8 + Math.random() * 1.6) + 'rem';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 18000);
         }
 
-        function endGame() {
-            clearInterval(gameInterval);
-            alert(`Game Over! Your score: ${score} hearts 💕\n\nNow answer the question!`);
-            document.getElementById('gameScreen').style.display = 'none';
-            document.getElementById('questionModal').style.display = 'flex';
-        }
-
-        function answerYes() {
-            music.play().catch(() => {});
-            alert("I knew it! 💕 Now open your letter...");
-            document.getElementById('questionModal').style.display = 'none';
-            
-            setTimeout(() => {
-                document.getElementById('envelope').style.display = 'block';
-            }, 5000);
-        }
-
-        function answerNo() {
-            document.getElementById('questionModal').innerHTML = `
-                <div class="modal-content glass">
-                    <h1 class="romantic-font" style="font-size: 3rem; margin-top: 50px; color: #fda4af;">I'm sorry to hear that...</h1>
-                    <p style="font-size: 1.4rem; margin-top: 30px;">I hope one day you'll feel the same way.</p>
-                    <p style="margin-top: 50px;">Goodbye for now 💔</p>
-                </div>
-            `;
+        function startFloatingHearts() {
+            setInterval(() => {
+                if (Math.random() > 0.35) createFloatingHeart();
+            }, 350);
         }
 
         function openEnvelope() {
             document.getElementById('envelope').style.display = 'none';
             document.getElementById('messageScreen').style.display = 'block';
+            music.play().catch(() => {});
+            startFloatingHearts();
         }
 
         function showSlideshow() {
