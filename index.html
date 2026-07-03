@@ -29,19 +29,53 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
         }
 
-        /* Unboxing Animation */
+        .stack-card {
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            cursor: pointer;
+            opacity: 0;
+            transform: scale(0.92);
+            transition: all 1.2s ease-in-out;
+        }
+        .stack-card.active {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 10;
+        }
+        .stack-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .stack-note {
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.75);
+            padding: 16px 32px;
+            border-radius: 30px;
+            font-style: italic;
+            max-width: 85%;
+            text-align: center;
+        }
+
+        /* Fixed Unboxing Animation */
         #unboxing {
             display: none;
             text-align: center;
-            padding: 100px 20px;
+            padding: 120px 20px;
         }
-        .envelope-unbox {
-            font-size: 6rem;
-            animation: unboxShake 0.8s infinite;
+        .unbox-icon {
+            font-size: 9rem;
+            animation: unboxShake 0.5s infinite alternate ease-in-out;
         }
         @keyframes unboxShake {
-            0%, 100% { transform: rotate(-8deg); }
-            50% { transform: rotate(8deg); }
+            0% { transform: rotate(-15deg) scale(0.9); }
+            100% { transform: rotate(15deg) scale(1.1); }
         }
     </style>
 </head>
@@ -78,10 +112,11 @@
         </button>
     </div>
 
-    <!-- Unboxing Animation -->
+<!-- Unboxing Animation -->
     <div id="unboxing" style="display: none; text-align: center; padding: 120px 20px;">
-        <div class="envelope-unbox">📦</div>
-        <h2 class="romantic-font" style="font-size: 2.4rem; margin-top: 30px;">Unboxing your love letter...</h2>
+        <div class="unbox-icon">📦</div>
+        <h2 class="romantic-font" style="font-size: 2.6rem; margin-top: 30px;">Unboxing your special letter...</h2>
+        <p style="margin-top: 20px; opacity: 0.8;">Please wait a moment...</p>
     </div>
 
     <!-- Envelope -->
@@ -99,7 +134,7 @@
         <div style="background: rgba(255,255,255,0.1); padding: 40px; border-radius: 24px; line-height: 1.85; font-size: 1.22rem; text-align: left;">
             <p>Poy, mula noong una kitang makilala, alam kong ikaw na ang taong hinihintay ko sa buong buhay ko. Ikaw ang liwanag sa mga madilim kong araw, ang yakap na nagpapakalma sa kaba ko, at ang dahilan kung bakit naniniwala pa rin ako sa walang hanggang pag-ibig.</p>
             
-            <p>Pasensya na sa lahat ng beses na nasaktan kita. Pasensya na sa mga salita na hindi ko dapat sinabi, sa mga sandaling hinayaan kong maging malamig ang puso ko, at sa mga pagkakataong hindi kita napahalagahan nang tama. Hindi ko sinasadya na saktan ka. Mahal na mahal kita at ang bawat luha mo ay parang kutsilyo sa puso ko. Hindi na mauulit 'yon. Pangako ko 'yan.</p>
+            <p>Pasensya na sa lahat ng beses na nasaktan kita. Pasensya na sa mga salita na hindi ko dapat sinabi, sa mga sandaling hinayaan kong maging malamig ang puso ko, at sa mga pagkakataong hindi kita napahalagahan nang tama. Hindi ko sinasadya na saktan ka. Mahal na mahal kita at ang bawat luha mo ay parang kutsilyo sa cuore ko. Hindi na mauulit 'yon. Pangako ko 'yan.</p>
             
             <p>Ngayon at sa mga susunod na araw, gusto kong patunayan sa'yo na ikaw ang pinakamahalaga sa buhay ko. Gusto kong maging mas mabuting tao para sa'yo. Gusto kong maging yung taong laging nandiyan kapag kailangan mo ako.</p>
             
@@ -114,7 +149,7 @@
         </button>
     </div>
 
-    <!-- Slideshow -->
+    <!-- Stacked Slideshow -->
     <div id="slideshowScreen" style="display: none; max-width: 720px; margin: 0 auto; padding: 20px; z-index: 10; position: relative;">
         <div id="stackContainer" style="position: relative; height: 520px; max-width: 620px; margin: 40px auto;"></div>
     </div>
@@ -178,7 +213,6 @@
             alert("I knew it! 💕 Now open your letter...");
             document.getElementById('questionScreen').style.display = 'none';
             
-            // Show unboxing for 5 seconds
             document.getElementById('unboxing').style.display = 'block';
             setTimeout(() => {
                 document.getElementById('unboxing').style.display = 'none';
@@ -202,10 +236,10 @@
         function showSlideshow() {
             document.getElementById('messageScreen').style.display = 'none';
             document.getElementById('slideshowScreen').style.display = 'block';
-            initAutoSlideshow();
+            initStackedSlideshow();
         }
 
-        function initAutoSlideshow() {
+        function initStackedSlideshow() {
             const container = document.getElementById('stackContainer');
             const slides = [
                 {url: "https://picsum.photos/id/1015/800/600", note: "This moment still gives me butterflies every time I see it. You looked so beautiful that day 💕"},
@@ -232,6 +266,14 @@
                 };
                 container.appendChild(card);
             });
+
+            // Auto slide every 10 seconds
+            setInterval(() => {
+                const allCards = document.querySelectorAll('.stack-card');
+                allCards[current].classList.remove('active');
+                current = (current + 1) % slides.length;
+                allCards[current].classList.add('active');
+            }, 10000);
         }
     </script>
 </body>
