@@ -9,13 +9,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
 
         * { 
-            transition: all 0.5s ease; 
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
             box-sizing: border-box;
         }
 
         body {
             font-family: 'Playfair Display', serif;
-            background: linear-gradient(135deg, #2a1b4a, #4c1d95, #831843);
+            background: linear-gradient(135deg, #1e1233, #4c1d95, #831843);
             margin: 0;
             min-height: 100vh;
             color: white;
@@ -24,15 +24,15 @@
         .romantic-font { font-family: 'Dancing Script', cursive; }
 
         .glass {
-            background: rgba(255, 255, 255, 0.09);
-            backdrop-filter: blur(18px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
         }
 
         .particle {
             position: fixed;
-            font-size: 1.8rem;
+            font-size: 1.9rem;
             pointer-events: none;
             z-index: 5;
             animation: floatParticle linear forwards;
@@ -41,6 +41,42 @@
             0% { transform: translateY(110vh) scale(0.6); opacity: 0; }
             20% { opacity: 0.9; }
             100% { transform: translateY(-30vh) scale(1.3); opacity: 0; }
+        }
+
+        /* Smooth Slide Transitions */
+        .slide {
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            opacity: 0;
+            transform: scale(0.95);
+            visibility: hidden;
+        }
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            visibility: visible;
+            z-index: 10;
+        }
+        .slide img, .slide video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .slide-note {
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.75);
+            padding: 16px 32px;
+            border-radius: 30px;
+            font-style: italic;
+            max-width: 85%;
+            text-align: center;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -58,9 +94,9 @@
 
     <!-- Sweet Message -->
     <div id="messageScreen" style="display: none; max-width: 700px; margin: 40px auto; padding: 30px; text-align: center; z-index: 10; position: relative;">
-        <h1 class="romantic-font" style="font-size: 2.8rem; color: #fda4af; margin-bottom: 30px;">Mahal kong Graciel,</h1>
+        <h1 class="romantic-font" style="font-size: 2.8rem; color: #fda4af; margin-bottom: 30px;">Mahal ko,</h1>
         <div style="background: rgba(255,255,255,0.1); padding: 40px; border-radius: 24px; line-height: 1.85; font-size: 1.22rem; text-align: left;">
-            <p>Poy, mula noong una kitang makilala, alam kong ikaw na ang taong hinihintay ko sa buong buhay ko. Ikaw ang liwanag sa mga madilim kong araw, ang yakap na nagpapakalma sa kaba ko, at ang dahilan kung bakit naniniwala pa rin ako sa walang hanggang pag-ibig.</p>
+            <p>Mahal, mula noong una kitang makilala, alam kong ikaw na ang taong hinihintay ko sa buong buhay ko. Ikaw ang liwanag sa mga madilim kong araw, ang yakap na nagpapakalma sa kaba ko, at ang dahilan kung bakit naniniwala pa rin ako sa walang hanggang pag-ibig.</p>
             
             <p>Pasensya na sa lahat ng beses na nasaktan kita. Pasensya na sa mga salita na hindi ko dapat sinabi, sa mga sandaling hinayaan kong maging malamig ang puso ko, at sa mga pagkakataong hindi kita napahalagahan nang tama. Hindi ko sinasadya na saktan ka. Mahal na mahal kita at ang bawat luha mo ay parang kutsilyo sa puso ko. Hindi na mauulit 'yon. Pangako ko 'yan.</p>
             
@@ -68,18 +104,18 @@
             
             <p>Ikaw ang tahanan ko. Ikaw ang pangarap ko. At pangako ko sa'yo — magmamahal ako sa'yo nang buong-buo, nang tapat, at nang walang katapusan. Hanggang sa huling hininga ko, ikaw pa rin.</p>
             
-            <p class="romantic-font" style="font-size: 2.2rem; margin-top: 40px; text-align: center;">Forever yours,<br>[Marky]</p>
+            <p class="romantic-font" style="font-size: 2.2rem; margin-top: 40px; text-align: center;">Forever yours,<br>[Your Name]</p>
         </div>
 
         <button onclick="showSlideshow()" 
                 style="margin-top: 50px; padding: 18px 45px; background: #e11d48; color: white; border: none; border-radius: 50px; font-size: 1.35rem;">
-            Click here Mi Amore 💕
+            Click here mi amore 💕
         </button>
     </div>
 
-    <!-- Slideshow -->
+    <!-- Romantic Slideshow -->
     <div id="slideshowScreen" style="display: none; max-width: 720px; margin: 0 auto; padding: 20px; z-index: 10; position: relative;">
-        <div id="stackContainer" style="position: relative; height: 480px; max-width: 620px; margin: 40px auto;"></div>
+        <div id="stackContainer" style="position: relative; height: 520px; max-width: 620px; margin: 40px auto;"></div>
     </div>
 
     <!-- Background Music -->
@@ -95,8 +131,8 @@
             heart.className = 'particle';
             heart.textContent = ['💕','❤️','💖','💗','💘'][Math.floor(Math.random()*5)];
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (8 + Math.random() * 7) + 's';
-            heart.style.fontSize = (1.6 + Math.random() * 1.2) + 'rem';
+            heart.style.animationDuration = (8 + Math.random() * 9) + 's';
+            heart.style.fontSize = (1.6 + Math.random() * 1.4) + 'rem';
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 17000);
         }
@@ -110,7 +146,6 @@
         function openEnvelope() {
             document.getElementById('envelope').style.display = 'none';
             document.getElementById('messageScreen').style.display = 'block';
-            
             music.play().catch(() => {});
             startParticles();
         }
@@ -118,37 +153,39 @@
         function showSlideshow() {
             document.getElementById('messageScreen').style.display = 'none';
             document.getElementById('slideshowScreen').style.display = 'block';
-            initStackSlideshow();
+            initAutoSlideshow();
         }
 
-        function initStackSlideshow() {
+        function initAutoSlideshow() {
             const container = document.getElementById('stackContainer');
             const slides = [
-                {url: "https://picsum.photos/id/1015/800/600", note: "This moment still gives me butterflies 💕"},
-                {url: "https://picsum.photos/id/237/800/600", note: "I fall in love with you every single day"},
-                {url: "https://picsum.photos/id/1005/800/600", note: "You're my safe place and my biggest dream"},
-                {url: "https://picsum.photos/id/201/800/600", note: "Thank you for choosing me every day"},
-                {url: "https://picsum.photos/id/133/800/600", note: "Forever isn't long enough with you"}
+                {url: "https://picsum.photos/id/1015/800/600", note: "This moment still gives me butterflies every time I see it. You looked so beautiful that day 💕"},
+                {url: "https://picsum.photos/id/237/800/600", note: "I fall in love with you more and more every single day. You are my greatest blessing"},
+                {url: "https://picsum.photos/id/1005/800/600", note: "You're my safe place, my home, and my biggest dream come true. I can't imagine life without you"},
+                {url: "https://picsum.photos/id/201/800/600", note: "Thank you for choosing me every day. I promise to love you with all my heart forever"},
+                {url: "https://picsum.photos/id/133/800/600", note: "Forever isn't long enough with you. I want to spend every tomorrow by your side"}
             ];
 
             let current = 0;
 
             slides.forEach((slide, i) => {
                 const card = document.createElement('div');
-                card.style.cssText = `position:absolute;inset:0;border-radius:24px;overflow:hidden;box-shadow:0 15px 35px rgba(0,0,0,0.5);cursor:pointer;opacity:${i===0?1:0};transform:scale(${i===0?1:0.92});`;
+                card.className = `slide ${i === 0 ? 'active' : ''}`;
+                card.style.cssText = 'position:absolute;inset:0;';
                 card.innerHTML = `
                     <img src="${slide.url}" style="width:100%;height:100%;object-fit:cover;">
-                    <div style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.75);padding:14px 32px;border-radius:50px;font-style:italic;max-width:80%;text-align:center;">${slide.note}</div>
+                    <div class="slide-note">${slide.note}</div>
                 `;
-                card.onclick = () => {
-                    current = (current + 1) % slides.length;
-                    document.querySelectorAll('#stackContainer > div').forEach((c, idx) => {
-                        c.style.opacity = idx === current ? '1' : '0';
-                        c.style.transform = idx === current ? 'scale(1)' : 'scale(0.92)';
-                    });
-                };
                 container.appendChild(card);
             });
+
+            // Auto advance every 10 seconds with smooth transition
+            setInterval(() => {
+                const allSlides = document.querySelectorAll('.slide');
+                allSlides[current].classList.remove('active');
+                current = (current + 1) % slides.length;
+                allSlides[current].classList.add('active');
+            }, 10000);
         }
     </script>
 </body>
