@@ -10,6 +10,7 @@
 
         * { 
             box-sizing: border-box;
+            cursor: none !important;
         }
 
         body {
@@ -21,12 +22,32 @@
             overflow-x: hidden;
         }
         .romantic-font { font-family: 'Dancing Script', cursive; }
- 
+
         .glass {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.25);
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Pop-up Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 24px;
+            padding: 50px 40px;
+            max-width: 420px;
+            text-align: center;
         }
     </style>
 </head>
@@ -50,17 +71,19 @@
         </div>
     </div>
 
-    <!-- Love Question -->
-    <div id="questionScreen" style="display: none; text-align: center; padding: 80px 20px;">
-        <h1 class="romantic-font" style="font-size: 2.8rem; margin-bottom: 50px;">Do you love me?</h1>
-        <button onclick="answerYes()" 
-                style="padding: 20px 60px; background: #e11d48; color: white; border: none; border-radius: 50px; font-size: 1.6rem; margin: 15px;">
-            Yes, I love you 💕
-        </button>
-        <button onclick="answerNo()" 
-                style="padding: 20px 60px; background: #6b7280; color: white; border: none; border-radius: 50px; font-size: 1.6rem; margin: 15px;">
-            No
-        </button>
+    <!-- Love Question Pop-up -->
+    <div id="questionModal" class="modal">
+        <div class="modal-content glass">
+            <h1 class="romantic-font" style="font-size: 2.8rem; margin-bottom: 40px;">Do you love me?</h1>
+            <button onclick="answerYes()" 
+                    style="padding: 18px 55px; background: #e11d48; color: white; border: none; border-radius: 50px; font-size: 1.5rem; margin: 10px;">
+                Yes, I love you 💕
+            </button>
+            <button onclick="answerNo()" 
+                    style="padding: 18px 55px; background: #6b7280; color: white; border: none; border-radius: 50px; font-size: 1.5rem; margin: 10px;">
+                No
+            </button>
+        </div>
     </div>
 
     <!-- Envelope -->
@@ -149,13 +172,13 @@
             clearInterval(gameInterval);
             alert(`Game Over! Your score: ${score} hearts 💕\n\nNow answer the question!`);
             document.getElementById('gameScreen').style.display = 'none';
-            document.getElementById('questionScreen').style.display = 'block';
+            document.getElementById('questionModal').style.display = 'flex';
         }
 
         function answerYes() {
             music.play().catch(() => {});
             alert("I knew it! 💕 Now open your letter...");
-            document.getElementById('questionScreen').style.display = 'none';
+            document.getElementById('questionModal').style.display = 'none';
             
             setTimeout(() => {
                 document.getElementById('envelope').style.display = 'block';
@@ -163,10 +186,12 @@
         }
 
         function answerNo() {
-            document.getElementById('questionScreen').innerHTML = `
-                <h1 class="romantic-font" style="font-size: 3rem; margin-top: 100px; color: #fda4af;">I'm sorry to hear that...</h1>
-                <p style="font-size: 1.4rem; margin-top: 30px;">I hope one day you'll feel the same way.</p>
-                <p style="margin-top: 50px;">Goodbye for now 💔</p>
+            document.getElementById('questionModal').innerHTML = `
+                <div class="modal-content glass">
+                    <h1 class="romantic-font" style="font-size: 3rem; margin-top: 50px; color: #fda4af;">I'm sorry to hear that...</h1>
+                    <p style="font-size: 1.4rem; margin-top: 30px;">I hope one day you'll feel the same way.</p>
+                    <p style="margin-top: 50px;">Goodbye for now 💔</p>
+                </div>
             `;
         }
 
